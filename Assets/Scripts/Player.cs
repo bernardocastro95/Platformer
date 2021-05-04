@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class Player : MonoBehaviour
     private bool _doubleJump = false;
     private int _coins;
     private UIManager _ui;
+    private int _lifes = 3;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,6 +26,7 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("UI Manager NULL");
         }
+        _ui.UpdateLivesDisplay(_lifes);
     }
 
     // Update is called once per frame
@@ -57,7 +60,10 @@ public class Player : MonoBehaviour
         dir.y = _yVelocity;
         _controller.Move(dir * Time.deltaTime);
 
-        
+        if(transform.position.y >= -10)
+        {
+
+        }
 
     }
 
@@ -65,5 +71,15 @@ public class Player : MonoBehaviour
     {
         _coins++;
         _ui.UpdateCoinsDisplay(_coins);
+    }
+    public void RemoveLife()
+    {
+        _lifes--;
+        _ui.UpdateLivesDisplay(_lifes);
+
+        if(_lifes < 1)
+        {
+            SceneManager.LoadScene(0);
+        }
     }
 }
