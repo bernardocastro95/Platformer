@@ -21,13 +21,24 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        MovementPlayer();
 
-        if(Cursor.visible == false && Input.GetKeyDown(KeyCode.Escape))
+        if (Cursor.visible == false && Input.GetKeyDown(KeyCode.Escape))
         {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray origin = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+            RaycastHit hit;
+
+            if (Physics.Raycast(origin, out hit))
+            {
+                Debug.Log("HIT: " + hit.transform.name);
+            }
+        }
+        MovementPlayer();
+
        
 
     }
