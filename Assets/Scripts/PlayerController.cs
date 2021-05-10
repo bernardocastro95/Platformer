@@ -11,6 +11,9 @@ public class PlayerController : MonoBehaviour
     private float _gravity = 9.81f;
     [SerializeField]
     private ParticleSystem _shot;
+    [SerializeField]
+    private GameObject _hitMarker;
+
 
     // Start is called before the first frame update
     void Start()
@@ -27,16 +30,24 @@ public class PlayerController : MonoBehaviour
 
         
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
             
             Ray origin = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             RaycastHit hit;
-            _shot.Play(true);
+            if (!_shot.isPlaying)
+            {
+                _shot.Play(true);
+            }
+           
+            
 
             if (Physics.Raycast(origin, out hit))
             {
                 Debug.Log("HIT: " + hit.transform.name);
+                GameObject laserHitted = Instantiate(_hitMarker, hit.point, Quaternion.LookRotation(hit.normal)) as GameObject;
+                Destroy(laserHitted, 1f);
+                
             }
         }
         else
