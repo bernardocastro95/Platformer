@@ -15,6 +15,9 @@ public class PlayerController : MonoBehaviour
     private GameObject _hitMarker;
     [SerializeField]
     private AudioSource _shotSource;
+    [SerializeField]
+    private int ammo;
+    private int max = 20;
 
 
     // Start is called before the first frame update
@@ -24,6 +27,7 @@ public class PlayerController : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         _shot = GameObject.Find("Muzzle_Flash").GetComponentInParent<ParticleSystem>();
+        ammo = max;
     }
 
     // Update is called once per frame
@@ -32,34 +36,9 @@ public class PlayerController : MonoBehaviour
 
         
 
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && ammo > 0)
         {
-            
-            Ray origin = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-            RaycastHit hit;
-            if (!_shot.isPlaying)
-            {
-                /*code in case of audio issues
-                 
-                if(_shotSource.isPlaying == false) 
-                {
-                    _shotSource.Play();
-                }
-                 
-                 */
-                _shot.Play(true);
-                _shotSource.Play();
-            }
-           
-            
-
-            if (Physics.Raycast(origin, out hit))
-            {
-                Debug.Log("HIT: " + hit.transform.name);
-                GameObject laserHitted = Instantiate(_hitMarker, hit.point, Quaternion.LookRotation(hit.normal)) as GameObject;
-                Destroy(laserHitted, 1f);
-                
-            }
+            Shooter();
         }
         else
         {
@@ -74,6 +53,11 @@ public class PlayerController : MonoBehaviour
         }
         MovementPlayer();
 
+        if (Input.GetKey(KeyCode.R))
+        {
+            StartCoroutine(Reloader());
+        }
+
        
 
     }
@@ -86,5 +70,39 @@ public class PlayerController : MonoBehaviour
         vel.y -= _gravity;
         vel = transform.transform.TransformDirection(vel);
         _controller.Move(vel * Time.deltaTime);
+    }
+
+    void Shooter()
+    {
+        ammo--;
+        Ray origin = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        RaycastHit hit;
+
+        if (!_shot.isPlaying)
+        {
+            /*code in case of audio issues
+
+            if(_shotSource.isPlaying == false) 
+            {
+                _shotSource.Play();
+            }
+
+             */
+            _shot.Play(true);
+
+            _shotSource.Play();
+        }
+        if (Physics.Raycast(origin, out hit))
+        {
+            Debug.Log("HIT: " + hit.transform.name);
+            GameObject laserHitted = Instantiate(_hitMarker, hit.point, Quaternion.LookRotation(hit.normal)) as GameObject;
+            Destroy(laserHitted, 1f);
+
+        }
+    }
+    IEnumerator Reloader()
+    {
+        yield return new WaitForSeconds(5.0f);
+        ammo = max;
     }
 }
