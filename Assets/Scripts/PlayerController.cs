@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     private ParticleSystem _shot;
     [SerializeField]
     private GameObject _hitMarker;
+    [SerializeField]
+    private AudioSource _shotSource;
 
 
     // Start is called before the first frame update
@@ -37,7 +39,16 @@ public class PlayerController : MonoBehaviour
             RaycastHit hit;
             if (!_shot.isPlaying)
             {
+                /*code in case of audio issues
+                 
+                if(_shotSource.isPlaying == false) 
+                {
+                    _shotSource.Play();
+                }
+                 
+                 */
                 _shot.Play(true);
+                _shotSource.Play();
             }
            
             
@@ -53,6 +64,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             _shot.Stop(true);
+            _shotSource.Stop();
         }
 
         if (Cursor.visible == false && Input.GetKeyDown(KeyCode.Escape))
