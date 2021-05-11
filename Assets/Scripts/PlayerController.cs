@@ -17,8 +17,9 @@ public class PlayerController : MonoBehaviour
     private AudioSource _shotSource;
     [SerializeField]
     private int ammo;
-    private int max = 20;
-
+    private int max = 200;
+    private bool _reloading = false;
+    private UI_Manager _manager;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +29,7 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         _shot = GameObject.Find("Muzzle_Flash").GetComponentInParent<ParticleSystem>();
         ammo = max;
+        _manager = GameObject.Find("Canvas").GetComponent<UI_Manager>();
     }
 
     // Update is called once per frame
@@ -53,8 +55,9 @@ public class PlayerController : MonoBehaviour
         }
         MovementPlayer();
 
-        if (Input.GetKey(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R) && _reloading == false)
         {
+            _reloading = true;
             StartCoroutine(Reloader());
         }
 
@@ -75,6 +78,7 @@ public class PlayerController : MonoBehaviour
     void Shooter()
     {
         ammo--;
+        _manager.UpdateAmmo(ammo);
         Ray origin = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
 
@@ -104,5 +108,7 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(5.0f);
         ammo = max;
+        _manager.UpdateAmmo(ammo);
+        _reloading = false;
     }
 }
