@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     private int max = 200;
     private bool _reloading = false;
     private UI_Manager _manager;
+    public bool _hasCoin = false;
 
     // Start is called before the first frame update
     void Start()
