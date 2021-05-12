@@ -105,6 +105,12 @@ public class PlayerController : MonoBehaviour
             GameObject laserHitted = Instantiate(_hitMarker, hit.point, Quaternion.LookRotation(hit.normal)) as GameObject;
             Destroy(laserHitted, 1f);
 
+            Destructable crate = hit.transform.GetComponent<Destructable>();
+            if(crate != null)
+            {
+                crate.DestroyCrate();
+            }
+
         }
     }
     IEnumerator Reloader()
