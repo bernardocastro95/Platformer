@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviour
     private bool _reloading = false;
     private UI_Manager _manager;
     public bool _hasCoin = false;
+    [SerializeField]
+    private GameObject _weapon;
 
     // Start is called before the first frame update
     void Start()
@@ -28,7 +30,7 @@ public class PlayerController : MonoBehaviour
         _controller = GetComponent<CharacterController>();
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        _shot = GameObject.Find("Muzzle_Flash").GetComponentInParent<ParticleSystem>();
+       _shot = GameObject.Find("Muzzle_Flash").GetComponentInParent<ParticleSystem>();
         ammo = max;
         _manager = GameObject.Find("Canvas").GetComponent<UI_Manager>();
     }
@@ -39,7 +41,7 @@ public class PlayerController : MonoBehaviour
 
         
 
-        if (Input.GetMouseButton(0) && ammo > 0)
+        if (Input.GetMouseButton(0) && ammo > 0 && _weapon.activeSelf == true)
         {
             Shooter();
         }
@@ -111,5 +113,11 @@ public class PlayerController : MonoBehaviour
         ammo = max;
         _manager.UpdateAmmo(ammo);
         _reloading = false;
+    }
+
+    public void EnableWeapon()
+    {
+        _weapon.SetActive(true);
+        _shot.Play(false);
     }
 }
